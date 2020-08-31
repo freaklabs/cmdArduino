@@ -1,5 +1,6 @@
 
 # cmdArduino
+A command line interface for the Arduino platform
 
 # Author
 by Akiba and Jacinta at Freaklabs
