@@ -148,7 +148,7 @@ void Cmd::handler()
 
     switch (c)
     {
-    case '\r':
+    case '\n':
         // terminate the msg and reset the msg ptr. then send
         // it to the handler for processing.
         *msg_ptr = '\0';
@@ -157,7 +157,7 @@ void Cmd::handler()
         msg_ptr = msg;
         break;
             
-    case '\n':
+    case '\r':
         // ignore newline characters. they usually come in pairs
         // with the \r characters we use for newline detection.
         break;
