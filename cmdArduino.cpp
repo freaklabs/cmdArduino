@@ -156,6 +156,11 @@ void Cmd::handler()
         parse((char *)msg);
         msg_ptr = msg;
         break;
+            
+    case '\n':
+        // ignore newline characters. they usually come in pairs
+        // with the \r characters we use for newline detection.
+        break;
     
     case '\b':
         // backspace 
