@@ -38,7 +38,6 @@
     its possible to execute individual functions within the sketch.
 */
 /**************************************************************************/
-#include <avr/pgmspace.h>
 #if ARDUINO >= 100
 #include <Arduino.h>
 #else
