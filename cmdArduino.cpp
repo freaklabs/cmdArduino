@@ -35,10 +35,9 @@
     \file Cmd.c
 
     This implements a simple command line interface for the Arduino so that
-    its possible to execute individual functions within the sketch. 
+    its possible to execute individual functions within the sketch.
 */
 /**************************************************************************/
-#include <avr/pgmspace.h>
 #if ARDUINO >= 100
 #include <Arduino.h>
 #else
@@ -112,7 +111,7 @@ void Cmd::parse(char *cmd)
     {
         argv[++i] = strtok(NULL, " ");
     } while ((i < 30) && (argv[i] != NULL));
-    
+
     // save off the number of arguments for the particular command.
     argc = i;
 
@@ -139,7 +138,7 @@ void Cmd::parse(char *cmd)
 /*!
     This function processes the individual characters typed into the command
     prompt. It saves them off into the message buffer unless its a "backspace"
-    or "enter" key. 
+    or "enter" key.
 */
 /**************************************************************************/
 void Cmd::handler()
@@ -156,9 +155,9 @@ void Cmd::handler()
         parse((char *)msg);
         msg_ptr = msg;
         break;
-    
+
     case '\b':
-        // backspace 
+        // backspace
         Serial.print(c);
         if (msg_ptr > msg)
         {
@@ -198,7 +197,7 @@ void Cmd::poll()
 /**************************************************************************/
 /*!
     Initialize the command line interface. This sets the terminal speed and
-    and initializes things. 
+    and initializes things.
 */
 /**************************************************************************/
 void Cmd::begin(uint32_t speed)
@@ -216,7 +215,7 @@ void Cmd::begin(uint32_t speed)
 /**************************************************************************/
 /*!
     Add a command to the command table. The commands should be added in
-    at the setup() portion of the sketch. 
+    at the setup() portion of the sketch.
 */
 /**************************************************************************/
 void Cmd::add(const char *name, void (*func)(int argc, char **argv))
@@ -249,4 +248,14 @@ void Cmd::add(const char *name, void (*func)(int argc, char **argv))
 uint32_t Cmd::conv(char *str, uint8_t base)
 {
     return strtol(str, NULL, base);
+}
+
+/**************************************************************************/
+/*!
+    Convert a string to a floating-point number.
+*/
+/**************************************************************************/
+float Cmd::conv(char *str)
+{
+    return strtof(str, NULL);
 }
