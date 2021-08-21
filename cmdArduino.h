@@ -60,6 +60,7 @@ public:
     void poll();
     void add(const char *name, void (*func)(int argc, char **argv));
     uint32_t conv(char *str, uint8_t base=10);
+    float conv(char *str);
 
 private:
     void display();

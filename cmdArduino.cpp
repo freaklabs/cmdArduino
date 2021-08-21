@@ -249,3 +249,13 @@ uint32_t Cmd::conv(char *str, uint8_t base)
 {
     return strtol(str, NULL, base);
 }
+
+/**************************************************************************/
+/*!
+    Convert a string to a floating-point number.
+*/
+/**************************************************************************/
+float Cmd::conv(char *str)
+{
+    return strtof(str, NULL);
+}
