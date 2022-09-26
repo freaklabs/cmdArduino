@@ -41,6 +41,13 @@
 #ifndef CMDARDUINO_H
 #define CMDARDUINO_H
 
+#include <avr/pgmspace.h>
+#if ARDUINO >= 100
+#include <Arduino.h>
+#else
+#include <WProgram.h>
+#endif
+
 #define MAX_MSG_SIZE    60
 #include <stdint.h>
 
@@ -55,8 +62,10 @@ typedef struct _cmd_t
 class Cmd
 {
 public:
+    HardwareSerial *_ser;
+
     Cmd();
-    void begin(uint32_t speed);
+    void begin(uint32_t speed, HardwareSerial *ser = NULL);
     void poll();
     void add(const char *name, void (*func)(int argc, char **argv));
     uint32_t conv(char *str, uint8_t base=10);

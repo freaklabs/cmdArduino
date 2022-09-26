@@ -38,14 +38,7 @@
     its possible to execute individual functions within the sketch. 
 */
 /**************************************************************************/
-#include <avr/pgmspace.h>
-#if ARDUINO >= 100
-#include <Arduino.h>
-#else
-#include <WProgram.h>
-#endif
-#include "HardwareSerial.h"
-#include "cmdArduino.h"
+#include <cmdArduino.h>
 
 // command line message buffer and pointer
 static uint8_t msg[MAX_MSG_SIZE];
@@ -80,13 +73,13 @@ void Cmd::display()
 {
     char buf[50];
 
-    Serial.println();
+    _ser->println();
 
     strcpy_P(buf, cmd_banner);
-    Serial.println(buf);
+    _ser->println(buf);
 
     strcpy_P(buf, cmd_prompt);
-    Serial.print(buf);
+    _ser->print(buf);
 }
 
 /**************************************************************************/
@@ -130,7 +123,7 @@ void Cmd::parse(char *cmd)
 
     // command not recognized. print message and re-generate prompt.
     strcpy_P(buf, cmd_unrecog);
-    Serial.println(buf);
+    _ser->println(buf);
 
     display();
 }
@@ -144,7 +137,7 @@ void Cmd::parse(char *cmd)
 /**************************************************************************/
 void Cmd::handler()
 {
-    char c = Serial.read();
+    char c = _ser->read();
 
     switch (c)
     {
@@ -152,14 +145,14 @@ void Cmd::handler()
         // terminate the msg and reset the msg ptr. then send
         // it to the handler for processing.
         *msg_ptr = '\0';
-        Serial.print("\r\n");
+        _ser->print("\r\n");
         parse((char *)msg);
         msg_ptr = msg;
         break;
     
     case '\b':
         // backspace 
-        Serial.print(c);
+        _ser->print(c);
         if (msg_ptr > msg)
         {
             msg_ptr--;
@@ -168,13 +161,13 @@ void Cmd::handler()
     
     default:
         // normal character entered. add it to the buffer
-        Serial.print(c);
+        _ser->print(c);
         *msg_ptr++ = c;
 
         // msg too long, clear command and display warning 
         if ((msg_ptr - msg) == (MAX_MSG_SIZE-1))
         {
-            Serial.println("Command too long. Pleaes reduce command size.");
+            _ser->println("Command too long. Pleaes reduce command size.");
             msg_ptr = msg;
         }
         break;
@@ -189,7 +182,7 @@ void Cmd::handler()
 /**************************************************************************/
 void Cmd::poll()
 {
-    while (Serial.available())
+    while (_ser->available())
     {
         handler();
     }
@@ -201,7 +194,7 @@ void Cmd::poll()
     and initializes things. 
 */
 /**************************************************************************/
-void Cmd::begin(uint32_t speed)
+void Cmd::begin(uint32_t speed, HardwareSerial *ser)
 {
     // init the msg ptr
     msg_ptr = msg;
@@ -209,8 +202,18 @@ void Cmd::begin(uint32_t speed)
     // init the command table
     cmd_tbl_list = NULL;
 
+    // load in the serial pointer if it's passed in
+    if (ser == NULL)
+    {
+        _ser = &Serial;
+    }
+    else
+    {
+        _ser = ser;
+    }
+
     // set the serial speed
-    Serial.begin(speed);
+    ser->begin(speed);
 }
 
 /**************************************************************************/
